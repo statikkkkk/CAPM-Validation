@@ -42,7 +42,7 @@ class Capm_validation:
 	def simulate(self, universe_size, sample_size):
 		returns_result = {}
 		vol_result = {}
-		for year in range(1972, 2017+1):
+		for year in range(1970, 2017+1):
 
 			returns_result[year] = np.zeros(sample_size)
 			vol_result[year] = np.zeros(sample_size)
@@ -79,9 +79,9 @@ class Capm_validation:
 				vol = (trade_days/(trade_days - 1)) * np.sum((P - MusStar)**2)
 				returns_result[year][i] = annual_returns
 				vol_result[year][i] = vol
-		with open('returns_'+ universe_size +'.pickle', 'wb') as handle:
+		with open('returns_'+ str(universe_size) +'.pickle', 'wb') as handle:
 				pickle.dump(returns_result, handle, protocol=pickle.HIGHEST_PROTOCOL)
-		with open('vol_'+ universe_size +'.pickle', 'wb') as handle:
+		with open('vol_'+ str(universe_size) +'.pickle', 'wb') as handle:
 			pickle.dump(vol_result, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 	def readRetDf(self):
@@ -96,7 +96,7 @@ class Capm_validation:
 		df = df[df['EXCHCD'] != -2]
 		df = df[df['EXCHCD'] != -1]
 		df = df[df['EXCHCD'] != 0]
-		for year in range(1972, 2017+1):
+		for year in range(1970, 2017+1):
 			yearRet = df[df['date'].dt.year == year]
 			p = yearRet.pivot_table(index='date', columns='TICKER', values='RET', aggfunc='mean')
 			with open('yearly_pickles/'+ str(year) + '_returns_pivoted.pickle', 'wb') as handle:
@@ -119,7 +119,7 @@ class Capm_validation:
 		df = df[df['EXCHCD'] != -1]
 		df = df[df['EXCHCD'] != 0]
 
-		for year in range(1972, 2017+1):
+		for year in range(1970, 2017+1):
 			yearRet = df[df['date'].dt.year == year]
 			p = yearRet.pivot_table(index='date', columns='TICKER', values='RET', aggfunc='mean')
 			with open('test_yearly_pickles/'+ str(year) + '_returns_pivoted.pickle', 'wb') as handle:
