@@ -60,10 +60,11 @@ class Capm_validation:
             # current = np.array([[1,np.nan,3], [2, np.nan, 4], [1,np.nan,3]])
             current = current[:, ~np.all(np.isnan(current), axis=0)]
             trade_days = np.count_nonzero(~np.isnan(current), axis=0)
-            median_trade_day = np.median(trade_days)
+            # median_trade_day = np.median(trade_days)
+            median_trade_day = np.argmax(np.bincount(trade_days))
 
-            current = current[:, trade_days >= median_trade_day]
-            cap = cap[:, trade_days >= median_trade_day]
+            current = current[:, trade_days == median_trade_day]
+            cap = cap[:, trade_days == median_trade_day]
             universe_size = min(universe_size, current.shape[1])
             # Find the companies of highest cap
             universe = current[:, cap[0].argsort()[-universe_size:]]
@@ -81,7 +82,9 @@ class Capm_validation:
                 P = np.sum(weights.reshape(1, universe_size) * universe, axis=1)
                 MusStar = np.sum(P) / trade_days
                 vol = (trade_days / (trade_days - 1)) * np.sum((P - MusStar) ** 2)
+                vol = vol ** 0.5
                 returns_result[year][i] = annual_returns
+                # returns_result[year][i] = MusStar * trade_days
                 vol_result[year][i] = vol
         with open('returns_' + str(universe_size) + '.pickle', 'wb') as handle:
             pickle.dump(returns_result, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -95,7 +98,8 @@ class Capm_validation:
                          converters={'RET': converter, 'EXCHCD': converter, 'PRC': converter, 'SHROUT': converter})
 
         df = df.dropna()
-        df['CAP'] = abs(df['PRC'] * df['SHROUT'])
+        # df['CAP'] = abs(df['PRC'] * df['SHROUT'])
+        df['CAP'] = df['PRC'] * df['SHROUT']
 
         # remove private companies
         df = df[df['EXCHCD'] != -2]
@@ -136,7 +140,7 @@ class Capm_validation:
                 pickle.dump(p, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-Capm_validation().readRetDf()
+# Capm_validation().readRetDf()
 # print(df.loc[df['TICKER'] == 'DGSE'])
 # Capm_validation().TestreadRetDf()
 
