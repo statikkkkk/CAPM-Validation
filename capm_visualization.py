@@ -30,23 +30,22 @@ def generate_overview_scatter(return_yearly, vol_yearly, universe_size, cml):
         for i, ax_row in enumerate(ax):
             for j, axes in enumerate(ax_row):
                 year = total_years[i * 6 + j]
-                axes.set_title(str(year))
-                axes.set_xlim(left=0)
-
                 x_sigma = vol_yearly[year]
                 y_sigma = return_yearly[year]
-                axes.scatter(x=x_sigma, y=y_sigma, s=0.3)
+                axes.set_title(str(year))
+                axes.set_xlim(left=0, right=max(x_sigma) + 0.05)
 
-                max_line = axes.get_xlim()[1]
-                x = np.array(np.arange(0, max_line, (max_line - 0) / 10))
+                axes.scatter(x=x_sigma, y=y_sigma, s=3)
+
+                x = np.array(np.arange(0, max(x_sigma) + 0.1, 0.05))
                 rou = str(cml[year]['rou'])
                 mu = str(cml[year]['mu'])
                 sigma = str(cml[year]['sigma'])
                 formula = rou + '+' + '((' + mu + '-' + rou + ') / ' + sigma + ') * x'
                 y = eval(formula)
-                axes.plot(x, y)
+                axes.plot(x, y, color='black')
         fig.suptitle("Comparisons of Random Portfolios from 1970-2017")
-        # plt.tight_layout()
+        plt.tight_layout()
         plt.savefig('scatter_' + str(universe_size) + '_overview.png', dpi=300)
 
 
@@ -61,18 +60,17 @@ def generate_individual_scatter(return_yearly, vol_yearly, universe_size, cml):
             ax = fig.add_subplot(1, 1, 1)
             x_sigma = vol_yearly[year]
             y_sigma = return_yearly[year]
-            ax.set_xlim(left=0)
+            ax.set_xlim(left=0, right=max(x_sigma) + 0.05)
 
-            ax.scatter(x=x_sigma, y=y_sigma, s=0.3)
+            ax.scatter(x=x_sigma, y=y_sigma, s=3)
 
-            max_line = ax.get_xlim()[1]
-            x = np.array(np.arange(0, max_line, (max_line - 0) / 10))
+            x = np.array(np.arange(0, max(x_sigma) + 0.1, 0.05))
             rou = str(cml[year]['rou'])
             mu = str(cml[year]['mu'])
             sigma = str(cml[year]['sigma'])
             formula = rou + '+' + '((' + mu + '-' + rou +') / ' + sigma +') * x'
             y = eval(formula)
-            ax.plot(x, y)
+            ax.plot(x, y, color='black')
 
             plt.xlabel("Standard Deviation")
             plt.ylabel("Expected Return")
@@ -122,8 +120,8 @@ for uni_size in tqdm([30, 100, 500, 1000]):
     print('[INFO] Finished overview scatter plot.')
     generate_individual_scatter(r, v, uni_size, cml)
     print('[INFO] Finished individual scatter.')
-    years, percentage = calculate_percentage(r, v, uni_size, cml)
-    print('[INFO] Finished Percentage Calculation.')
+    # years, percentage = calculate_percentage(r, v, uni_size, cml)
+    # print('[INFO] Finished Percentage Calculation.')
     # exit(0)
     # print(percentage)
 
