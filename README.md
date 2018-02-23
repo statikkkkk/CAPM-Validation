@@ -11,7 +11,8 @@ All data is from CRSP.
 2. top 1000 market cap stocks
 
 # Results
-![alt text]([https://ibb.co/ctRafx][img]https://preview.ibb.co/hHV1Lx/scatter_2017.png)
+![alt text](scatter_2017.png)
+![alt text](percentage_1000.png)
 
 # Conclusion
 We were able to replicate Wojciechowski and Thompson’s results, finding that for most years there exists some random portfolios that beat the Capital Market Line. Further, there are many years, even when considering a large portfolio size, in which 100% of the random portfolios beat the CML. These portfolio results seem to contradict the Efficient Markets Hypothesis as well as the CAPM assumption that no portfolios exist beyond the Efficient Frontier which lies below the CML, except at a single tangent point.
